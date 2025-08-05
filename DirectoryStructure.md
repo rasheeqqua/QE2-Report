@@ -1,0 +1,18 @@
+main.tex
+references.bib
+sections/
+    abstract.tex
+    introduction.tex
+    decision_diagrams.tex
+    ztdd_review.tex
+    traditional_methods.tex
+    decision_diagram_comparison.tex
+    normal_forms_comparison.tex
+    monte_carlo_comparison.tex
+    applications.tex
+    conclusion.tex
+    appendices.tex
+figures/
+tables/
+custom.sty
+README.md
