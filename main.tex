@@ -1,7 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LaTeX Boilerplate for QE2-Report
-% Based on sample_main.tex and project folder structure
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[11pt, letterpaper]{article}
 
@@ -14,11 +13,16 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{abstract}
-\usepackage{cite}
+\usepackage[backend=biber]{biblatex}
 \usepackage{fancyhdr}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{titlesec}
+
+%-------------------------------------------------------------------------------
+%   BIBLIOGRAPHY RESOURCE
+%-------------------------------------------------------------------------------
+\addbibresource{references.bib}
 
 %-------------------------------------------------------------------------------
 %   DOCUMENT CONFIGURATION
@@ -72,15 +76,10 @@
     {\large Hasibul H. Rasheeq$^*$} \\
     {\small{Department of Nuclear Engineering, North Carolina State University, 27695 Raleigh, North Carolina, USA.} \\ \small{$^*$Correspondence: hrashee@ncsu.edu}}
     \\[2em]
-    % Abstract as a paragraph inside the title page
     \noindent\textbf{Abstract:} \input{sections/abstract.tex}\par\vspace{1em}\hrule
     \vfill
 \end{titlepage}
 
-% Remove Table of Contents
-% Table of Contents
-% \tableofcontents
-% \newpage
 
 %-------------------------------------------------------------------------------
 %   MAIN SECTIONS (Order based on ToC and available files)
@@ -99,7 +98,6 @@
 %-------------------------------------------------------------------------------
 %   BIBLIOGRAPHY
 %-------------------------------------------------------------------------------
-\bibliographystyle{plain}
-\bibliography{references}
+\printbibliography
 
 \end{document}
