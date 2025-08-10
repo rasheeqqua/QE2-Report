@@ -1,0 +1,157 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Template based on the provided "Sample Report.pdf"
+% Font: Times New Roman, 11pt
+% Author: Gemini
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt, letterpaper]{article}
+
+%-------------------------------------------------------------------------------
+%   PACKAGES
+%-------------------------------------------------------------------------------
+\usepackage[margin=1in]{geometry} % Set page margins
+\usepackage{newtxtext, newtxmath}   % Use Times New Roman font
+\usepackage{amsmath}               % For advanced math environments
+\usepackage{graphicx}              % To include images
+\usepackage{caption}               % For custom captions
+\usepackage{abstract}              % For the abstract environment
+\usepackage{cite}                  % For numeric citations like [1-5]
+\usepackage{fancyhdr}              % For custom headers and footers
+\usepackage{booktabs}              % For professional-quality tables
+\usepackage{hyperref}              % For clickable links and URLs
+\usepackage{lipsum}                % For placeholder text (can be removed)
+
+%-------------------------------------------------------------------------------
+%   DOCUMENT CONFIGURATION
+%-------------------------------------------------------------------------------
+
+% Configure hyperref for better PDF output
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Qualifying Exam Report},
+    pdfpagemode=FullScreen,
+}
+
+% Custom formatting for section and subsection titles to match the sample
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}
+  {\thesection.}
+  {1em}
+  {}
+\titleformat{\subsection}
+  {\normalfont\large\itshape}
+  {\thesubsection}
+  {1em}
+  {}
+
+% Custom footer style
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\renewcommand{\headrulewidth}{0pt} % No header rule
+\fancyfoot[C]{\thepage} % Center page number in footer
+\renewcommand{\footrulewidth}{0.4pt} % Footer rule
+
+% Redefine \maketitle for custom title block
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \null
+  \begin{center}%
+    {\Large \bfseries Qualifying Exam Report \par}
+    \vspace{1.5em}
+    {\large \bfseries Critique of "A Plant-specific HRA Sensitivity Analysis Considering Dynamic Operator Actions and Accident Management Actions" \par}
+    \vspace{2em}
+    {\large Mostafa Hamza \par}
+    \vspace{1em}
+    {Department of Nuclear Engineering, North Carolina State University, 27695 Raleigh, North Carolina, USA \par}
+    {*Correspondence: mmhamza@ncsu.edu \par}
+  \end{center}%
+  \par
+  \vspace{2.5em}
+}
+\makeatother
+
+
+%-------------------------------------------------------------------------------
+%   DOCUMENT START
+%-------------------------------------------------------------------------------
+\begin{document}
+
+% Title block
+\maketitle
+
+% Abstract
+\begin{abstract}
+\noindent Probabilistic risk assessment (PRA) is an integral part of building the safety case of high-risk systems like nuclear power plants. Considering the human factor impact over the safety of a reactor during normal, abnormal, and emergency operation was part of the PRA process since its inception. Even during the reactor safety study, WASH-1400, that introduced PRA to the nuclear industry, human reliability analysis (HRA) was an integral part of tracking event progression and plant response. Currently, HRA is considered an element of the PRA model of any nuclear power plant; hence, a myriad of studies deals with developing, applying, and validating different HRA techniques. Of these studies, the article that is the focus of this critique, which investigate the importance of post-initiator operator actions on the risk profile of an existing nuclear power plant. This critique discusses the motivation of the paper under consideration, investigate the methodology used by the author, apply the approach introduced by the article, and highlights different points of strength and weakness within the article along with possible paths of improvement.
+\end{abstract}
+
+\section{Introduction}
+The human factor is an integral part of building any complex system, whether completely manual or fully autonomous. Even autonomous systems require human input in the form of software development, maintenance, and updating [1]. In high-risk industries, like chemical, petroleum, navigation, or nuclear, human error may result in financial, environmental, and personal losses. Hence, personnel reliability is assessed within these high-risk industries to determine the impact of human failures [1-5]. The field that is interested in assessing human reliability and quantifying the probability of human failures is human reliability analysis (HRA).
+
+Being the pioneer in both probabilistic risk assessment (PRA) and HRA, the nuclear industry led the research in HRA. By presenting a methodical way to assess the risk profile of nuclear power plants, the first reactor safety study (WASH-1400) issued in 1975 set the basis of the PRA field. Though its applicability was initially questioned, the predictions presented in WASH-1400 were proven correct during the Three Mile Island nuclear accident [6,7]. WASH-1400 utilized, along with other concepts like common mode failures, the methodology developed by Swain and Guttmann in assessing human reliability [5].
+
+\subsection{Gösgen-Däniken AG Nuclear Power Plant}
+The paper utilizes a PRA model developed for an existing power plant which is the Gösgen-Däniken AG Nuclear Power Plant (KKG). Located in Switzerland, KKG is a 1000 MWe pressurized water reactor (PWR) that started generating electricity commercially in 1979. With an unlimited operating license, conditional safe operation, KKG is a highly redundant plant with a full PRA model to assess its risk profile [17]. Sections 1.2 and 1.3 discuss the PRA tool and HRA method, respectively, used in building the KKG's PRA model.
+
+\section{Motivation}
+As discussed previously, personnel actions impact the risk profile of any associated facility. In NPP, human intervention is part of all stages of commissioning, operation, and decommissioning. Of utmost interest to risk analysis is the impact of operator actions during the lifetime of the NPP and their associated HFEs. The ASME/ANS probabilistic risk assessment standard for advanced non-light water reactor (LWR) nuclear power plants [22] defines HFE as a "failure or unavailability of a component, system, or function that is caused by human inaction, or an inappropriate action". Associated with each HFE is a value for HEP that represents the probability that the reactors' personnel will fail to perform the required action within the required time [22].
+
+Here are the sample equations from the report:
+\begin{equation}
+I^{RAW}(i|t)=\frac{1-h(0_{i},p(t))}{1-h(p(t))}
+\end{equation}
+\begin{equation}
+I^{RRW}(i|t)=\frac{1-h(p(t))}{1-h(1_{i},p(t))}
+\end{equation}
+
+\section{Critique}
+In this section, the methodology, assumptions, and results of the paper under investigation are discussed and critiqued along with presenting other editorial critiques. Moreover, whenever appropriate, possible paths of resolving the critique points and improving the methodology are presented. Finally, the impact, validity, and applicability of the approach under discussion are investigated for other operational NPPs, under-design NPPs, and non-LWRs.
+
+\begin{figure}[h!]
+    \centering
+    % Use a placeholder since we don't have the image file.
+    % Replace 'placeholder-image' with your actual image file (e.g., my_figure.png)
+    \includegraphics[width=0.8\textwidth]{https://placehold.co/600x400/EEE/31343C?text=Figure+Placeholder}
+    \caption{Sensitivity of the CDF/LERF as a function of the parameter SENHR3 [25]}
+    \label{fig:sensitivity}
+\end{figure}
+
+Another major critique is that, by using a proprietary model, the implementation, modification, and results can not be replicated or reproduced. This results in multiple issues within the results themselves, including assessing the implementation of the approach within the PRA model itself.
+
+\begin{equation}
+Pr(\text{success})=1-Pr(\text{Failure})
+\end{equation}
+
+\section{Conclusion}
+In this report, the article "A plant-specific HRA sensitivity analysis considering dynamic operator actions and accident management actions" is being critiqued. The article investigates the impact of two categories of operator actions on the risk profile of an operating NPP. These two categories are dynamic operator actions and accident management actions. Dynamic OAs are preventive actions that are conducted by the operators following the emergency operating procedure, whereas AMAs are mainly mitigative actions that follow the emergency response guidelines. In this analysis, the author used a rudimentary global sensitivity analysis, in which human error probabilities are scaled by multiple parameters. By modifying these parameters, the values of CDF and LERF are then investigated to assess the impact of these modifications.
+
+%-------------------------------------------------------------------------------
+%   REFERENCES
+%-------------------------------------------------------------------------------
+\begin{thebibliography}{99}
+
+\bibitem{1} M. Zhang, D. Zhang, H. Yao, and K. Zhang, "A probabilistic model of human error assessment for autonomous cargo ships focusing on human-autonomy collaboration," \textit{Safety Science}, vol. 130, p. 104838, Oct. 2020, doi: 10.1016/j.ssci.2020.104838.
+
+\bibitem{2} S. I. Sezer, E. Akyuz, and O. Arslan, "An extended HEART Dempster-Shafer evidence theory approach to assess human reliability for the gas freeing process on chemical tankers," \textit{Reliability Engineering \& System Safety}, vol. 220, p. 108275, Apr. 2022, doi: 10.1016/j.ress.2021.108275.
+
+\bibitem{3} Q.-L. Lin, D.-J. Wang, W.-G. Lin, and H.-C. Liu, "Human reliability assessment for medical devices based on failure mode and effects analysis and fuzzy linguistic theory," \textit{Safety Science}, vol. 62, pp. 248–256, Feb. 2014, doi: 10.1016/j.ssci.2013.08.022.
+
+\bibitem{4} A. Bye et al., \textit{The Petro-HRA Guideline}. Institutt for energiteknikk, 2017. Accessed: Feb. 15, 2022. [Online]. Available: \url{https://sintef.brage.unit.no/sintef-xmlui/handle/11250/2567437}.
+
+\bibitem{5} A. D. Swain and H. E. Guttmann, "Handbook of human-reliability analysis with emphasis on nuclear power plant applications. Final report," NUREG/CR-1278, SAND-80-0200, 5752058, Aug. 1983. doi: 10.2172/5752058.
+
+\bibitem{6} "Reactor safety study. An assessment of accident risks in U. S. commercial nuclear power plants. Executive summary: main report. [PWR and BWR]," Nuclear Regulatory Commission, Washington, D.C. (USA), WASH-1400-MR; NUREG-75/014-MR, Oct. 1975. doi: 10.2172/7134131.
+
+\bibitem{7} J. C. Lee and N. J. McCormick, \textit{Risk and Safety Analysis of Nuclear Systems}. John Wiley \& Sons, 2012. ch. 9, pp. 259–301.
+
+\bibitem{8} R. L. Boring, "Fifty Years of THERP and Human Reliability Analysis," Idaho National Lab. (INL), Idaho Falls, ID (United States), INL/CON-12-25623, Jun. 2012. Accessed: Feb. 15, 2022. [Online]. Available: \url{https://www.osti.gov/biblio/1082366-fifty-years-therp-human-reliability-analysis}.
+
+% ... Add other references here to complete the list
+
+\end{thebibliography}
+
+\end{document}
