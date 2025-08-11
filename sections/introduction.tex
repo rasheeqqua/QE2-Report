@@ -1,25 +1,118 @@
 \section{Introduction}
+Probabilistic Risk Assessment (PRA) aims to facilitate sound decision making under uncertainty, primarily in complex engineering systems. To achieve this, risk is defined using a set of triplets \cite{kaplan_quantitative_1981}, as shown in Eq. \ref{risk_triplet}:
 
-Probabilistic Risk Assessment (PRA) is a systematic methodology used to evaluate the risk associated with complex engineered systems, such as nuclear power plants. The classical triplet definition of risk in PRA considers three elements: (i) what can go wrong (scenarios), (ii) how likely it is (probabilities or frequencies), and (iii) what the consequences are (outcomes). PRA provides a structured approach to identify accident scenarios, estimate their likelihood, and assess their potential consequences, thereby supporting risk-informed decision-making for safety and reliability.
+\begin{equation}
+\label{risk_triplet}
+R = \bigl\{\langle S_i, L_i, X_i \rangle\bigr\}_c
+\end{equation}
 
-PRA models are constructed using two main logical structures: event trees and fault trees. Event trees are used to model the progression of accident scenarios following an initiating event, capturing the sequence of successes and failures of safety functions. Each branch in an event tree represents a possible outcome of a functional event, and the combination of branches forms accident sequences.
+Each triplet, denoted as $\langle S_i, L_i, X_i \rangle$, addresses three fundamental questions:
 
-Fault trees, on the other hand, are used to model the logical relationship between component-level failures and the failure of system-level functions. Fault trees are constructed using logic gates (AND, OR, k-out-of-n, etc.) to represent how basic events (component failures) combine to cause a top event (system failure). Fault trees can be classified as coherent or non-coherent. Coherent fault trees are those in which the top event is a monotonic function of the basic events, meaning that the occurrence of additional failures cannot decrease the probability of the top event. Non-coherent fault trees include negations (NOT gates) and can represent situations where the success of a component can also lead to system failure.
-
-In PRA, event trees and fault trees are often linked to provide a comprehensive model of accident progression. Two main approaches are used for this integration: fault tree linking (FTL) and event tree linking (ETL) \cite{nusbaumer2013fault}. In the FTL approach, relatively small event trees are used to represent combinations of functional events, and system fault trees are developed for each function. The event tree sequences are translated into a master fault tree, which is then analyzed to identify minimal cut sets or prime implicants. In the ETL approach, larger event trees are constructed, and dependencies between systems are resolved by developing fault trees for functional events such that they do not share basic events. This often requires expanding the event tree to make sequences pairwise disjoint, which can increase the size and complexity of the model.
-
-In both approaches, the number of accident sequences can become very large, especially in multi-hazard scenarios. To manage this complexity, only significant event sequences—those with non-negligible frequencies—are retained, while sequences with very low frequencies are typically dropped during quantification. This truncation is necessary to keep the analysis tractable but introduces approximation.
-
-A key challenge in PRA quantification arises when the model contains non-rare events, i.e., basic events with relatively high probabilities. Traditional quantification algorithms, such as MOCUS, are based on the enumeration of minimal cut sets (for coherent fault trees) or prime implicants (for non-coherent fault trees). However, the number of cut sets or prime implicants can grow exponentially with the size of the model, making exact quantification computationally infeasible for large models.
-
-To address this, a variety of algorithms and approximations have been developed:
 \begin{itemize}
-    \item \textbf{Traditional algorithms:} Methods like MOCUS and its variants focus on cut set enumeration and are widely used in industry.
-    \item \textbf{Decision diagram techniques:} Binary Decision Diagrams (BDD), Zero-suppressed BDD (ZBDD), and Ternary Decision Diagrams (TDD) provide compact representations of Boolean functions and can be used for both exact and approximate quantification.
-    \item \textbf{Normal form methods:} Techniques such as d-DNNF, sd-DNNF, and SDD transform the Boolean model into a form that is more amenable to efficient probability calculation.
-    \item \textbf{Monte Carlo methods:} These use random sampling to estimate probabilities, which can be effective for very large models but may require a large number of samples for rare events.
+  \item What can go wrong ($S_i$)? This specifies a specific scenario, such as an initiating event.
+  \item How likely is it to happen ($L_i$)? This represents the likelihood, either as a probability or frequency, of scenario $S_i$.
+  \item What are the consequences if it does happen ($X_i$)? This characterizes the severity of the outcome, which can range from radiological releases to economic and societal impacts.
 \end{itemize}
 
-Approximate methods are often used in conjunction with these algorithms to reduce computational effort. Common approximations include the Rare Event Approximation (REA), Minimal Cut Upper Bound (MCUB), and the application of truncation limits on probability, frequency, or cut set order. While these approximations can make quantification feasible, they may lead to overestimation or underestimation of risk, particularly in the presence of non-rare events or non-coherent logic.
+The notation \(\{ \cdot \}_c\) emphasises the inclusion of all risk scenarios, as omitting any significant scenario could lead to an underestimation of the total risk. A practical approach to enumerating these triplets is through scenario structuring, which involves the logical decomposition of potential failure scenarios to answer "What can go wrong?". This leads to the use of Event Trees (ETs) and Fault Trees (FTs).
 
-The remainder of this paper is organized as follows. Section 2 provides a detailed overview of PRA, fault trees, event trees, and their integration. Section 3 introduces decision diagram techniques used in PRA quantification, including BDD, ZBDD, TDD, and the recently proposed Zero-Suppressed Ternary Decision Diagram (ZTDD). Section 4 presents a critical review of the ZTDD method, evaluating its methodology and practical applicability. Section 5 compares ZTDD with traditional quantification algorithms, while Section 6 contrasts it with other decision diagram approaches. Section 7 discusses normal form methods, and Section 8 reviews Monte Carlo methods. Section 9 analyzes the application of these quantification methods to advanced nuclear reactor PRA models, focusing on multi-hazard scenarios, computational complexity, and suitability for different use cases. The paper concludes with a summary of findings and recommendations for PRA quantification in large, complex models.
+An ET systematically analyses how an initial event can lead to different outcomes based on the success or failure of subsequent safety functions or actions. It shows the various paths an accident can take, from an initiating event to different possible end-states. Each unique pathway in an ET, such as $\langle I, F_1, F_2, \ldots, F_n, X_j \rangle$, directly corresponds to a scenario ($S_i$) within the risk triplet, with its associated likelihood and consequences, as shown in Fig. \ref{fig:event_tree_example}.
+
+\input{figures/event_tree}
+
+These pathways can be represented as a logical AND of relevant Boolean variables for the initiating event and functional event outcomes. The collection of all branches forms a Disjunctive Normal Form (DNF) expression, as shown in Eq. \ref{DNF}.
+
+\begin{equation}
+\label{DNF}
+\text{Core Damage}, (CD) \equiv X2 + X3 \equiv I.(\overline{F1}.F2 + F_1)
+\end{equation}
+
+In contrast, an FT offers a top-down, hierarchical representation of how a high-level system failure, known as the top event (TE), can happen due to malfunctions in components or subsystems and due to operator actions. FTs consist of events and gates (e.g., AND, OR, k-of-n voting logic, XOR, NOT), which describe how lower-level events, known as basic events, logically combine to cause system failure.
+
+In the context of PRA models, especially when interpreted as Boolean formulas, the concept of coherence is important.
+
+\begin{itemize}
+\item A coherent system is one whose fault tree is constructed using only AND and OR gates, implying that if the system fails due to a set of component failures, it will continue to fail if additional components also fail.
+\item On the contrary, a non-coherent system incorporates NOT gates, meaning system failure can depend on components working, or that the failure of an additional component might even lead to a successful system outcome. An example is $F = A \cdot B + \overline A \cdot C$, or a term like $A \cdot \overline B \cdot C$ in an event sequence where $\overline B$ represents the success of the safety function.
+\end{itemize}
+
+A primary objective of Fault Tree Analysis (FTA) is the quantitative assessment of the likelihood that the top event (system failure) occurs. This involves identifying combinations of basic events that lead to system failure, which are defined as implicants. A prime implicant is an implicant that is not a subset of any other implicant, meaning that if even a single basic event is removed from it, the system will no longer fail. In the context of system failure, a cut set is an implicant containing only failure events that cause system failure. Specifically, minimal cut sets (MCS) are prime implicants that represent the smallest combinations of component failures sufficient to cause system failure. By identifying these MCS, engineers can pinpoint the specific set of failure scenarios that lead to critical consequences, such as core damage in nuclear systems.
+
+However, exact computation of the top event's failure probability can be computationally demanding, particularly for large and complex fault trees due to the exponential number of basic event combinations that must be considered. To illustrate how quickly the number of terms grows in the exact calculation, consider a system with $m=4$ MCS: $C_1, C_2, C_3, C_4$. The exact probability that at least one cut set occurs is given by:
+
+\begin{align*}
+P(C_1 \cup C_2 \cup C_3 \cup C_4) =\;&
+P(C_1) + P(C_2) + P(C_3) + P(C_4) - [P(C_1 \cap C_2) + P(C_1 \cap C_3)\\
+&+ P(C_1 \cap C_4) + P(C_2 \cap C_3) + P(C_2 \cap C_4) + P(C_3 \cap C_4)] \\
+&+ [P(C_1 \cap C_2 \cap C_3) + P(C_1 \cap C_2 \cap C_4) + P(C_1 \cap C_3 \cap C_4) + P(C_2 \cap C_3 \cap C_4)] \\
+&- P(C_1 \cap C_2 \cap C_3 \cap C_4)
+\end{align*}
+
+This expansion contains $2^4 - 1 = 15$ terms. As the number of cut sets increases, the number of terms grows exponentially. For example, with $m=10$ cut sets, the expansion would require $2^{10} - 1 = 1023$ terms. This is why approximations such as the Rare Event Approximation (REA) and Min-Cut Upper Bound (MCUB) are often used. To define these approximations, let \(\mathcal{C} = \{C_1, C_2, \ldots, C_n\}\) denote the set of MCS, where each \(C_i\) is a set of basic events. The REA estimates the top event probability as the sum of the probabilities of the MCS, as shown in Eq. \ref{REA}:
+
+\begin{equation}
+\label{REA}
+P_{\mathrm{REA}} = \sum_{i=1}^n P(C_i) = \sum_{i=1}^n \prod_{j \in C_i}p_j \end{equation}
+
+where \(p_j\) is the probability of basic event \(j\). The MCUB (Eq. \ref{MCUB}), on the other hand, provides an upper bound by assuming the cut sets are mutually exclusive:
+
+\begin{equation}
+\label{MCUB}
+P_{\mathrm{MCUB}} = 1 - \prod_{i=1}^n \left[1 - P(C_i)\right]
+\end{equation}
+
+To manage computational complexity, truncation limits are also applied. This involves discarding MCS whose probability falls below a chosen threshold, or whose order (no. of basic events in a cut set) exceeds a specified value. While this reduces computational burden, it introduces an underestimation of the true risk by ignoring some failure situations. 
+
+To quantify the risk associated with complex systems, particularly for aspects like core damage in Level 1 PRA of nuclear reactors, two modeling methodologies for linking FTs and ETs are employed: Fault Tree Linking (FTL) and Event Tree Linking (ETL). In both approaches, the functional events within an event tree are explicitly linked to the top event of their associated fault trees.
+
+\begin{itemize}
+\item \textbf{FTL}: Each event tree sequence is translated into a Boolean expression by replacing every functional event on the path with its own Boolean form and, along that path, taking the logical product of functional events (failure branches) and the negations of functional events (success branches). Summing the expressions of all sequences that lead to the same consequence yields a Disjunctive Normal Form (DNF) for that consequence. A master fault tree is then built from this DNF, and its MCS are quantified to obtain the top event frequency (e.g., core damage frequency), incorporating the initiating event frequency. FTL is used when the linked fault trees are solved with algorithms that compute Prime Implicants (PIs) or MCS.
+
+\item \textbf{ETL}: A key distinction between FTL and ETL is that, in ETL, the fault trees attached to functional events are developed in such a way that they share no basic events. This is enforced via successive Shannon decompositions during model development until the functional events are independent. The master fault tree for a given consequence is then the logical sum of all sequences that lead to it. Under this independence, quantification often reduces to multiplying the initiating event frequency by the probability of the chosen branch at each functional event, thereby avoiding the MCS enumeration required in FTL.
+\end{itemize}
+
+Despite their different model development and quantification strategies, both FTL and ETL approaches are considered weakly equivalent at a given precision, meaning they agree on the most probable accident scenarios. The reason why FTL only enumerates MCS instead of prime implicants (PIs) is that, when an event sequence includes a NOT gate (such as $G_1 \cdot \overline{G_2}$), the Delete Term Approximation (DTA) is typically used. In DTA, the \(\overline{G_2}\) term is deleted, and any MCS of \(G_1\) that is also a MCS of $\overline{G_2}$ is also removed. The reasons why DTA is adopted are:
+
+\begin{itemize}
+\item In nuclear reactors, system failure probabilities are typically very low. For example, if $P(G_2) = 10^{-4}$, then $$P(\overline{G_2}) = 1 - 10^{-4} \approx 1$$ So, omitting the $\overline{G_2}$ term introduces negligible error.
+\item Any MCS of $G_1$ that contains a MCS from $G_2$ would make $G_2$ true and $\overline{G_2}$ false, meaning $G_1.\overline{G2}=false=0$, which is not physically meaningful. Therefore, such cut sets must be removed from $G_1$.
+\end{itemize}
+
+This process results in a set of cut sets containing only positive (non-negated) gates. After enumerating the MCS, the top event frequency is estimated using the Rare Event Approximation (REA) or the Min-Cut Upper Bound (MCUB) methods. However, these approximations tend to overestimate the top event probability when the basic events are non-rare.
+
+To illustrate the overestimation, consider two minimal cut sets $C_1 = \{A, B\}$ and $C_2 = \{B, C\}$, where $P(A) = P(B) = P(C) = 0.8$. Then,
+\begin{equation}
+P(C_1) = P(A)P(B) = 0.8 \times 0.8 = 0.64
+\end{equation}
+\begin{equation}
+P(C_2) = P(B)P(C) = 0.8 \times 0.8 = 0.64
+\end{equation}
+
+Thus,
+\begin{equation}
+P_{\mathrm{REA}} = 0.64 + 0.64 = 1.28
+\end{equation}
+which is not possible, since probability has to be between 0 and 1.
+
+\begin{equation}
+P_{\mathrm{MCUB}} = 1 - (1-0.64)^2 = 1 - 0.1296 = 0.8704
+\end{equation}
+
+The true probability of the top event is:
+\begin{equation}
+P(C_1 \cup C_2) = P(C_1) + P(C_2) - P(C_1 \cap C_2).
+\end{equation}
+
+Since $C_1 \cap C_2 = \{A, B, C\}$, we have
+\begin{equation}
+P(C_1 \cap C_2) = P(A)P(B)P(C) = 0.8 \times 0.8 \times 0.8 = 0.512.
+\end{equation}
+
+Therefore,
+\begin{equation}
+P(C_1 \cup C_2) = 0.64 + 0.64 - 0.512 = 0.768.
+\end{equation}
+
+This example shows that both REA and MCUB can significantly overestimate the true top event probability when the basic event probabilities are not rare.
+
+This is where the Zero-suppressed Ternary Decision Diagram (ZTDD) comes in. The author claims that ZTDD can enumerate all the prime implicants of the master fault tree without relying on the Delete Term Approximation (DTA). The author also provides formulas for converting the ZTDD into a Binary Decision Diagram (BDD), so that the exact calculation of the top event frequency can be obtained. This means ZTDD can avoid the overestimation of the core damage frequency, unlike DTA. The remainder of this paper is organized around the critical discussion of ZTDD, highlighting both its strengths and weaknesses, but with a primary focus on its limitations. Section 2 introduces decision diagram techniques used in PRA quantification, including BDD, Zero-suppressed Binary Decision Diagram (ZBDD), Ternary Decision Diagram (TDD), and the proposed ZTDD. Section 3 presents a critical review of the ZTDD method, evaluating its methodology and practical applicability. Sections 4 through 7 compare ZTDD with traditional quantification algorithms, other decision diagram approaches, normal form methods, and Monte Carlo methods, respectively. Section 8 analyzes the applicability of these quantification methods to advanced nuclear reactor PRA models in terms of time and space complexity, and suitability for different use cases. The paper concludes with a summary of findings and recommendations for PRA quantification in large, complex models.

@@ -1,0 +1,39 @@
+\begin{figure}[htbp]
+\centering
+\tikzset{
+grow'=down,
+level distance=42pt,
+level/.style={sibling distance=44pt/(#1*#1*0.75)+3pt},
+edge from parent/.append style={
+draw,
+edge from parent path={
+(\tikzparentnode.west) |- ($(\tikzparentnode.west)!0.5!(\tikzchildnode.east)$) -| (\tikzchildnode.east)
+},
+},
+every node/.append style={
+anchor=center, rotate=90, draw=black, fill=white, thick,
+font=\footnotesize\bfseries, text centered, inner sep=0pt
+},
+var/.style={shape=circle, minimum height=16pt},
+and/.style={and gate US},
+or/.style={or gate US}
+}
+\begin{tikzpicture}[
+circuit logic US,
+tiny circuit symbols,
+level 1/.style={sibling distance=40mm},
+level 2/.style={sibling distance=22mm}
+]
+\node[or]{\rotatebox{-90}{$T$}}
+child { node[and] {}
+child { node[var] {\rotatebox{-90}{$c$}} }
+child { node[var] {\rotatebox{-90}{$b$}} }
+}
+child { node[and] {}
+child { node[var] {\rotatebox{-90}{$b$}} }
+child { node[var] {\rotatebox{-90}{$a$}} }
+};
+\end{tikzpicture}
+\caption{Sample fault tree for T = ab + bc}
+\label{fig:ft_ab_bc_tree}
+\end{figure}
